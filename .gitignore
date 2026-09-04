@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Raw portrait inputs stay local; the generated portrait-ascii.svg is committed.
+source-photo.*
+source-prepped.png

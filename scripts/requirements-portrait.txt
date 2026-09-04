@@ -1,0 +1,7 @@
+# Portrait pipeline deps -- LOCAL ONLY, never installed in CI.
+# rembg pulls onnxruntime (~hundreds of MB); the daily job doesn't need it
+# because the ASCII portrait is generated once and committed.
+pillow
+numpy
+opencv-python
+rembg
