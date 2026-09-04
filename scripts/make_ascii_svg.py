@@ -35,7 +35,8 @@ ACCENT = "#39d353"
 
 MONO = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"
 
-# Brightest -> darkest. Background is white after prep, so it lands on ' '.
+# Sparse -> dense. The glyphs are light on a dark panel, so a denser character
+# reads as a *brighter* pixel: 0 (the black background) -> ' ', 255 -> '@'.
 RAMP = " .`:-=+*cs#%@"
 
 CHROME_H = 36
@@ -47,6 +48,12 @@ PAD_BOT = 10
 # starts fringing the monochrome art with colour.
 COLS = 78
 
+# Relative (x0, y0, x1, y1) crop applied before anything else, tuned for the
+# current source photo: a full-body shot leaves the face only ~12 characters
+# wide, which is well under what the 13-step ramp needs to show a feature.
+# Set to None to use the whole frame; override per-run with --crop=x0,y0,x1,y1.
+CROP = (0.16, 0.00, 0.70, 0.54)
+
 ART_W = WIDTH - PAD_X * 2
 ART_TOP = CHROME_H + PAD_TOP
 ART_H = HEIGHT - ART_TOP - PAD_BOT
@@ -57,11 +64,18 @@ LINE_H = FONT * 1.02
 ROWS = int(ART_H // LINE_H)
 
 
-def sample_image(path: Path) -> list[list[int]]:
-    """Center-crop to the character-grid aspect, then downsample to COLS x ROWS."""
+def sample_image(path: Path, crop: tuple[float, float, float, float] | None) -> list[list[int]]:
+    """Crop to frame the subject, fit the character-grid aspect, downsample."""
     from PIL import Image  # imported lazily so --placeholder needs no deps
 
     image = Image.open(path).convert("L")
+
+    if crop:
+        w, h = image.size
+        x0, y0, x1, y1 = crop
+        image = image.crop((int(x0 * w), int(y0 * h), int(x1 * w), int(y1 * h)))
+        print(f"[ascii] cropped to {image.width}x{image.height}")
+
     target = (COLS * CHAR_W) / (ROWS * LINE_H)
     w, h = image.size
 
@@ -93,7 +107,7 @@ def placeholder_grid() -> list[list[int]]:
             shoulders = 1.0 - math.hypot(sx, sy) / 0.72
             mass = max(head, shoulders)
             if mass <= 0:
-                line.append(255)          # background -> blank character
+                line.append(0)            # background -> blank character
                 continue
             edge = min(1.0, mass / 0.30)                              # soft rim falloff
             lit = max(0.0, min(1.0, 0.55 - 0.45 * dx - 0.30 * dy))    # key light, upper-left
@@ -106,7 +120,7 @@ def placeholder_grid() -> list[list[int]]:
 def to_ascii(grid: list[list[int]]) -> list[str]:
     span = len(RAMP) - 1
     return [
-        "".join(RAMP[min(span, int((255 - v) * len(RAMP) / 256))] for v in row)
+        "".join(RAMP[min(span, int(v * len(RAMP) / 256))] for v in row)
         for row in grid
     ]
 
@@ -180,6 +194,18 @@ def render(rows: list[str], label: str) -> str:
     return "".join(parts)
 
 
+def parse_crop(argv: list[str]) -> tuple[float, float, float, float] | None:
+    for arg in argv:
+        if arg == "--no-crop":
+            return None
+        if arg.startswith("--crop="):
+            parts = tuple(float(p) for p in arg.split("=", 1)[1].split(","))
+            if len(parts) != 4:
+                raise SystemExit("--crop needs four comma-separated values: x0,y0,x1,y1")
+            return parts  # type: ignore[return-value]
+    return CROP
+
+
 def main(argv: list[str]) -> int:
     args = [a for a in argv[1:] if not a.startswith("-")]
     force_placeholder = "--placeholder" in argv[1:]
@@ -190,7 +216,7 @@ def main(argv: list[str]) -> int:
         grid, label = placeholder_grid(), "portrait.ascii [placeholder]"
         print("[ascii] rendering procedural placeholder (no photo used)")
     elif src.exists():
-        grid, label = sample_image(src), "portrait.ascii"
+        grid, label = sample_image(src, parse_crop(argv[1:])), "portrait.ascii"
         print(f"[ascii] sampled {src.name} -> {COLS}x{ROWS} grid")
     else:
         print(

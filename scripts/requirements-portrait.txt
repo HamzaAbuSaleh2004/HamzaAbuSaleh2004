@@ -4,4 +4,6 @@
 pillow
 numpy
 opencv-python
-rembg
+# The [cpu] extra is what actually pulls onnxruntime; bare `rembg` installs the
+# library but leaves it with no inference backend on recent versions.
+rembg[cpu]

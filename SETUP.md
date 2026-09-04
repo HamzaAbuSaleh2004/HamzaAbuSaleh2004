@@ -31,20 +31,41 @@ git remote add origin https://github.com/HamzaAbuSaleh2004.git
 git push -u origin main
 ```
 
-## Add your real portrait
+## Regenerating the portrait
 
-The committed `portrait-ascii.svg` is a **procedural placeholder**. To use your face:
+`portrait-ascii.svg` is built from `image.png`. To redo it, or to swap in a
+different photo:
 
 ```bash
-python -m venv .venv && .venv\Scripts\activate     # PowerShell: .venv\Scripts\Activate.ps1
-pip install -r scripts/requirements-portrait.txt   # heavy: rembg pulls onnxruntime
-python scripts/prep_photo.py source-photo.jpg      # → source-prepped.png
+python -m venv .venv && .venv\Scripts\Activate.ps1
+pip install -r scripts/requirements-portrait.txt   # heavy: onnxruntime + a ~1GB matting model
+python scripts/prep_photo.py image.png             # → source-prepped.png
 python scripts/make_ascii_svg.py                   # → portrait-ascii.svg
-git add portrait-ascii.svg && git commit -m "feat: real portrait" && git push
 ```
 
-A head-and-shoulders shot with even lighting and a clean background works best —
-ASCII has ~13 brightness levels, so busy backdrops turn to mush.
+Three settings control how it looks, and a new photo will usually need the first
+one retuned:
+
+- **`CROP` in `make_ascii_svg.py`** — relative `(x0, y0, x1, y1)`, currently
+  `(0.16, 0.0, 0.70, 0.54)` to frame head-and-shoulders. The grid is only 78×47
+  characters, so a full-body shot leaves the face ~12 characters wide and the
+  features disappear. Try values with `--crop=x0,y0,x1,y1`, or `--no-crop` for
+  the full frame, before editing the constant.
+- **`SUBJECT_CEIL` in `prep_photo.py`** (225) — caps how bright the subject gets.
+  The top of the ramp (`#`, `%`, `@`) is nearly uniform in perceived density, so
+  letting a lit face reach 255 flattens it into a blob.
+- **`SUBJECT_FLOOR`** (42) — keeps dark clothing from dropping out entirely.
+
+### Why the photo gets composited onto black
+
+The art is light glyphs on a dark panel, so a *denser* character reads as a
+*brighter* pixel. That inverts the usual ASCII convention: the background has to
+land on 0 (blank) and the subject sits above it. Composite onto white — as the
+original article does, because it assumes dark-ink-on-light — and a dark suit
+turns into a solid bright slab.
+
+A head-and-shoulders shot with even lighting works best; the ramp only has 13
+steps, so low-contrast or backlit photos turn to mush.
 
 ## Edit the info card
 
