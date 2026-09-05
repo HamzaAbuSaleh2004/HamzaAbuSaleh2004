@@ -4,8 +4,10 @@
 
 | File | What it does | Runs |
 | --- | --- | --- |
+| `scripts/fetch_stats.py` | Public repo + language byte counts → `data/stats.json` | daily, in CI |
+| `scripts/render_stats_svg.py` | `stats.json` → `stats-card.svg` **(shown in the README)** | daily, in CI |
 | `scripts/fetch_contributions.py` | Scrapes the public contributions calendar → `data/contributions.json` | daily, in CI |
-| `scripts/render_heatmap_svg.py` | `contributions.json` → `contrib-heatmap.svg` | daily, in CI |
+| `scripts/render_heatmap_svg.py` | `contributions.json` → `contrib-heatmap.svg` (built but not displayed) | daily, in CI |
 | `scripts/make_info_card.py` | neofetch-style card → `info-card.svg` | locally, on demand |
 | `scripts/prep_photo.py` | photo → background-free, contrast-boosted `source-prepped.png` | locally, once |
 | `scripts/make_ascii_svg.py` | prepped photo → `portrait-ascii.svg` | locally, once |
@@ -82,6 +84,25 @@ python scripts/make_info_card.py
 
 Set `STATIC=1` to render a frozen frame instead of the animated one (useful for
 previewing in an image viewer that ignores CSS animation).
+
+## Swapping the heatmap back in
+
+The contribution heatmap is still generated daily, just not displayed. Once the
+graph has filled out, swap the two lines at the top of `README.md`:
+
+```html
+<img src="./contrib-heatmap.svg" width="860" alt="Contribution heatmap" />
+```
+
+Both cards are 860 wide, so nothing else needs to move. You can also show both.
+
+### A caveat on the language numbers
+
+Jupyter Notebook reads high (63%) because `.ipynb` files embed their outputs —
+base64 image data counts as notebook bytes. It is what GitHub itself reports on
+every repo page, so the card matches what visitors already see, but it does
+undersell Python. If you'd rather rank by *how many repos use each language*
+instead of raw bytes, that's a small change in `fetch_stats.py`.
 
 ## Layout rules that actually matter
 

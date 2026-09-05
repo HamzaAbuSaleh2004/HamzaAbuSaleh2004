@@ -30,7 +30,19 @@ jobs:
       # Only the light deps -- the portrait pipeline is local-only.
       - run: pip install -r scripts/requirements.txt
 
-      - run: python scripts/fetch_contributions.py
+      - name: Fetch repo + language stats
+        run: python scripts/fetch_stats.py
+        env:
+          GITHUB_PROFILE_USER: ${{ github.repository_owner }}
+          # Only raises the API rate limit; the script reads public data either way.
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - run: python scripts/render_stats_svg.py
+
+      # Still generated, though the README currently features the stats card --
+      # so the heatmap is ready to swap back in once the graph fills out.
+      - name: Fetch contributions
+        run: python scripts/fetch_contributions.py
         env:
           GITHUB_PROFILE_USER: ${{ github.repository_owner }}
 
@@ -38,5 +50,5 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: refresh contribution graph [skip ci]"
-          file_pattern: "data/contributions.json contrib-heatmap.svg"
+          commit_message: "chore: refresh profile stats [skip ci]"
+          file_pattern: "data/stats.json stats-card.svg data/contributions.json contrib-heatmap.svg"
