@@ -18,7 +18,7 @@
 <br>
 
 [![Portfolio](https://img.shields.io/badge/portfolio-0d1117?style=for-the-badge&logo=firefox&logoColor=39d353)](https://hamza-portfolio-rk8n.onrender.com/)
-[![Email](https://img.shields.io/badge/email-0d1117?style=for-the-badge&logo=gmail&logoColor=39d353)](mailto:habusaleh@liverx.me)
+[![Email](https://img.shields.io/badge/email-0d1117?style=for-the-badge&logo=gmail&logoColor=39d353)](mailto:hamzaabusaleh04@gmail.com)
 
 <sub>Heatmap refreshes itself daily via GitHub Actions · all animation is pure SVG + CSS</sub>
 

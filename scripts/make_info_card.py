@@ -20,12 +20,12 @@ PROFILE = {
     "host": "github",
     "rows": [
         ("Now", "Building AI agents @ LiverX"),
-        ("Prev", "CS @ Al Hussein Technical University"),
+        ("Prev", "Data Science & AI @ Al Hussein Technical University"),
         ("Stack", "Python · Google ADK · Vertex AI · GCP · PyTorch · FastAPI"),
         ("Focus", "Multi-agent systems, MLOps, applied ML"),
         ("Highlights", "Cancer-risk prediction · CNN image classification · transit analytics"),
         ("Web", "hamza-portfolio-rk8n.onrender.com"),
-        ("Email", "habusaleh@liverx.me"),
+        ("Email", "hamzaabusaleh04@gmail.com"),
     ],
 }
 # ---------------------------------------------------------------------------
