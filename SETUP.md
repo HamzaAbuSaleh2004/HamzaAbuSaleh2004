@@ -24,12 +24,16 @@ git commit -m "feat: animated profile readme"
 gh repo create HamzaAbuSaleh2004 --public --source . --push
 ```
 
-No `gh`? Create `HamzaAbuSaleh2004` on github.com/new (public, no README), then:
+No `gh`? Create `HamzaAbuSaleh2004` on github.com/new — public, and leave
+"Add a README"/.gitignore/license **unticked**, or the push gets rejected for
+having unrelated history. Then:
 
 ```bash
-git remote add origin https://github.com/HamzaAbuSaleh2004.git
+git remote add origin https://github.com/HamzaAbuSaleh2004/HamzaAbuSaleh2004.git
 git push -u origin main
 ```
+
+The name appears twice on purpose: owner, then repo.
 
 ## Regenerating the portrait
 
