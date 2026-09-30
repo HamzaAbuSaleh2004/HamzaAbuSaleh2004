@@ -1,42 +1,42 @@
 {
   "username": "HamzaAbuSaleh2004",
-  "generated_at": "2026-09-29T12:52:05Z",
+  "generated_at": "2026-09-30T12:34:14Z",
   "totals": {
     "repos": 10,
     "languages": 7,
     "stars": 0,
-    "code_bytes": 4269878
+    "code_bytes": 4450883
   },
   "languages": [
     {
       "name": "Jupyter Notebook",
       "bytes": 2458669,
-      "percent": 57.6
-    },
-    {
-      "name": "HTML",
-      "bytes": 505214,
-      "percent": 11.8
+      "percent": 55.2
     },
     {
       "name": "Python",
-      "bytes": 481076,
-      "percent": 11.3
+      "bytes": 602613,
+      "percent": 13.5
+    },
+    {
+      "name": "HTML",
+      "bytes": 505402,
+      "percent": 11.4
     },
     {
       "name": "TypeScript",
-      "bytes": 397842,
-      "percent": 9.3
+      "bytes": 457122,
+      "percent": 10.3
     },
     {
       "name": "JavaScript",
       "bytes": 326390,
-      "percent": 7.6
+      "percent": 7.3
     },
     {
       "name": "Other",
       "bytes": 100687,
-      "percent": 2.4
+      "percent": 2.3
     }
   ]
 }
